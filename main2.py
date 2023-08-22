@@ -1,13 +1,16 @@
-# app.py
+import base64
 import os
 from flask import Flask, render_template
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-import base64
 import email
 
 app = Flask(__name__)
+
+
+
+
 
 # Gmail API scope
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
@@ -46,19 +49,17 @@ def fetch_gmail_inbox():
                 elif header['name'] == 'Date':
                     msg_data['time'] = header['value']
 
-            def get_message_body(msg):
-                msg_parts = msg['payload'].get('parts', [])
-                msg_body = ''
-                for part in msg_parts:
-                    if part['mimeType'] == "text/plain" or part['mimeType'] == "text/html" or part['mimeType'] == "css":
-                        msg_body += base64.urlsafe_b64decode(part['body']['data']).decode('utf-8')
-                return msg_body
-            msg_body = get_message_body(msg)
+            msg_body = base64.urlsafe_b64decode(msg['payload']['body']['data']).decode('utf-8')
             msg_data['body'] = email.message_from_string(msg_body).get_payload()
             inbox_details.append(msg_data)
 
     return inbox_details
 
+
+
+
+
+# 
 @app.route("/")
 def login():
     return render_template('login.html')
@@ -68,10 +69,10 @@ def login():
 def register():
     return render_template('sigup.html')
 
-@app.route('/home')
-def index():
+@app.route("/home")
+def home():
     inbox_details = fetch_gmail_inbox()
     return render_template('inbox.html', inbox_details=inbox_details)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+
+app.run(debug=True)

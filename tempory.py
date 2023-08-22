@@ -20,7 +20,7 @@ def fetch_gmail_inbox():
 
     # If credentials don't exist or are invalid, initiate the OAuth 2.0 flow to authorize the application
     if not creds or not creds.valid:
-        flow = InstalledAppFlow.from_client_secrets_file('api2.json', SCOPES)
+        flow = InstalledAppFlow.from_client_secrets_file('api.json', SCOPES)
         creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
@@ -50,7 +50,7 @@ def fetch_gmail_inbox():
                 msg_parts = msg['payload'].get('parts', [])
                 msg_body = ''
                 for part in msg_parts:
-                    if part['mimeType'] == "text/plain" or part['mimeType'] == "text/html" or part['mimeType'] == "css":
+                    if part['mimeType'] == 'text/plain' or part['mimeType'] == 'text/plain':
                         msg_body += base64.urlsafe_b64decode(part['body']['data']).decode('utf-8')
                 return msg_body
             msg_body = get_message_body(msg)
