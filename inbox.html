@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gmail Inbox</title>
+</head>
+<body>
+    <h1>Gmail Inbox</h1>
+<ul>
+    {% for message in inbox_details %}
+    <li>
+        <strong>Subject:</strong> {{ message.subject }}<br>
+        <strong>From:</strong> {{ message.from }}<br>
+        <strong>Time:</strong> {{ message.time }}<br>
+        <strong>Body:</strong><br>
+        {{ message.body|safe }}<br>
+
+        <strong>Attachments:</strong>
+        <ul>
+            {% for attachment in message.attachments %}
+            <li><a href="{{ url_for('download_attachment', filename=attachment.filename) }}">{{ attachment.filename }}</a></li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
+
